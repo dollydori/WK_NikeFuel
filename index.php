@@ -12,7 +12,7 @@
 
 		.note {
 			margin-top: 10px;
-			color: #999;
+			color: #EEE;
 		}
 	</style>
 </head>
