@@ -8,6 +8,7 @@
 
 		.fuel {
 			color: #C33;
+			font-size:50px;
 		}
 
 		.note {
@@ -28,6 +29,17 @@
 	$date_string = date("dmy");
 	$url = 'https://api.nike.com/v1.0/me/activities/summary/' . $date_string . '?deviceId=' . $device_id . '&access_token=' . $access_token . '&endDate=' . $date_string . '&fidelity=96';
 
+
+
+
+	$token2='414673250f7201d16c47ba3396f4c5ed';
+	$device2='05596a33-b0db-49bd-9e9c-9870ebd4f770';
+	$url2 = 'https://api.nike.com/v1.0/me/activities/summary/' . $date_string . '?deviceId=' . $device2 . '&access_token=' . $token2 . '&endDate=' . $date_string . '&fidelity=96';
+
+	
+
+
+
 	// Initializing curl
 	$ch = curl_init( $url );
 
@@ -47,6 +59,30 @@
 
 	// Parse json
 	$json_data = json_decode($result);
+	
+	
+	
+	$ch2=curl_init($url2);
+		// Configuring curl options
+	$options2 = array(
+			CURLOPT_RETURNTRANSFER => true,
+			//CURLOPT_USERPWD => $username . ":" . $password,   // authentication
+			CURLOPT_HTTPHEADER => array('Content-type: application/json', 'appid: fuelband', 'Accept: application/json')
+			//CURLOPT_POSTFIELDS => $json_string
+		);
+
+		// Setting curl options
+		curl_setopt_array( $ch2, $options2 );
+
+		// Getting results
+		$result2 = curl_exec($ch2);
+
+		// Parse json
+		$json_data2 = json_decode($result2);
+
+	
+	
+	
 
 	// Check timezone
 	$zonelist = array(
@@ -99,15 +135,33 @@
 		}
 	}
 
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!! Francis\'s daily total fuel up to ';
+
+
+
+
+	
+	
+	
+	
+
+	echo 'Francis Fuel:';
 	echo date("F.j, Y, g:i:sa");
 	echo ' is ';
-	echo '<span class="fuel">' . $json_data->daily[0]->summary->totalFuel . '</span>';
-	echo '.';
-
+	echo '<span class="fuel">' . $json_data->daily[0]->summary->totalFuel . '/'.$json_data->daily[0]->summary->lastKnownDailyGoal .'</span>';
+	echo '<br>';
+	echo 'Nacoki: <span class="fuel">' . $json_data2->daily[0]->summary->totalFuel. '/'.$json_data2->daily[0]->summary->lastKnownDailyGoal .'</span>';
 	echo '<div class="note">';
 	echo $result;
 	echo '</div>';
+	
+	
+	
+	
+	
 	?>
+	
+	
+	
+	
 </body>
 </html>
