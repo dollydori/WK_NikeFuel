@@ -99,7 +99,7 @@
 		}
 	}
 
-	echo 'Francis\'s daily total fuel up to ';
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!! Francis\'s daily total fuel up to ';
 	echo date("F.j, Y, g:i:sa");
 	echo ' is ';
 	echo '<span class="fuel">' . $json_data->daily[0]->summary->totalFuel . '</span>';
