@@ -1,21 +1,76 @@
+<?php
+session_start();
+
+include_once( 'config.php' );
+include_once( 'saetv2.ex.class.php' );
+
+$o = new SaeTOAuthV2( WB_AKEY , WB_SKEY );
+$code_url = $o->getAuthorizeURL( WB_CALLBACK_URL );
+
+$c = new SaeTClientV2( WB_AKEY , WB_SKEY , $_SESSION['token']['access_token'] );
+$uid_get = $c->get_uid();
+$uid = $uid_get['uid'];
+?>
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<style type="text/css">
 		body {
 			font-family: sans-serif;
+			font-size: 16px;
 			color: black;
+			margin: 0;
+			padding: 0;
+		}
+
+		.fg {
+			position: absolute;
 		}
 
 		.fuel {
 			color: #C33;
 			font-size:50px;
+			margin-bottom: 30px;
 		}
 
 		.note {
-			margin-top: 10px;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
 			color: #EEE;
+			margin: 0;
+			padding: 0;
+		}
+
+		.share_btn {
+			color: white;
+			background-color: #666;
+			border: 3px solid #CCC;
+			padding: 5px;
+			font-size: 16px;
+			margin-left: 20px;
+			cursor: pointer;
 		}
 	</style>
+	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.share_btn').click(function()  {
+				var text = $(this).attr('title');
+				$.ajax({
+					type:	'GET',
+					url:	'weiboshare.php',
+					data:	{text: text},
+					success:
+						function(data) {
+							alert(data);
+						}
+				});
+			});
+		});
+	</script>
 </head>
 <body>
 	<?php
@@ -137,29 +192,34 @@
 
 
 
-
-
-	
-	
-	
-	
-
-	echo 'Francis Fuel:';
-	echo date("F.j, Y, g:i:sa");
-	echo ' is ';
-	echo '<span class="fuel">' . $json_data->daily[0]->summary->totalFuel . '/'.$json_data->daily[0]->summary->lastKnownDailyGoal .'</span>';
-	echo '<br>';
-	echo 'Nacoki: <span class="fuel">' . $json_data2->daily[0]->summary->totalFuel. '/'.$json_data2->daily[0]->summary->lastKnownDailyGoal .'</span>';
 	echo '<div class="note">';
 	echo $result;
 	echo '</div>';
-	
-	
-	
-	
-	
+
+	echo '<div class="fg">';
+
+	echo '<div>';
+	echo '<h1>FUEL POINT SHARER</h1>';
+
+	echo '	<div class="owner">Francis\' Fuel now:</div>';
+	echo '	<div class="fuel">' . $json_data->daily[0]->summary->totalFuel . '/'.$json_data->daily[0]->summary->lastKnownDailyGoal;
+	if(isset($uid)) echo '<span class="share_btn" title="Francis\' current fuel point = ' . $json_data->daily[0]->summary->totalFuel . '">share to weibo</span>';
+	echo '	</div>';
+	echo '</div>';
+
+	echo '<div>';
+	echo '	<div class="owner">Nacoki\'s Fuel now:</div>';
+	echo '	<div class="fuel">' . $json_data2->daily[0]->summary->totalFuel. '/'.$json_data2->daily[0]->summary->lastKnownDailyGoal;
+	if(isset($uid)) echo '<span class="share_btn" title="Nacoki\'s current fuel point = ' . $json_data2->daily[0]->summary->totalFuel . '">share to weibo</span>';
+	echo '	</div>';
+	echo '</div>';
+
+	if(!isset($uid)) echo '<p><a href="' . $code_url . '"><img src="weibo_login.png" title="weibo login" alt="weibo login" border="0" /></a></p>';
+
+	echo '</div>';
+
+
 	?>
-	
 	
 	
 	
