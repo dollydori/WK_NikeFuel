@@ -53,19 +53,87 @@ $uid = $uid_get['uid'];
 			margin-left: 20px;
 			cursor: pointer;
 		}
+
+		#mask {
+			position: absolute;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background-color: rgba(0, 0, 0, 0.5);
+			display: none;
+		}
+
+		.msg_box {
+			width: 400px;
+			height: 200px;
+			background-color: white;
+			border: 5px solid #CCC;
+			margin: 20px auto;
+		}
+
+		.msg {
+			color: black;
+			text-align: center;
+			width: 100%;
+			margin-top: 35px;
+		}
+
+		.btn {
+			width: 120px;
+			height: 35px;
+			background-color: #666;
+			border: 3px solid #CCC;
+			margin-top: 35px;
+			text-align: center;
+			vertical-align: middle;
+			line-height: 35px;
+			cursor: pointer;
+			color: white;
+		}
+
+		#ok_btn {
+			float: right;
+			margin-right: 60px;
+			background-color: #C33;
+			border: 3px solid #FCC;
+		}
+
+		#cancel_btn {
+			float: left;
+			margin-left: 60px;
+		}
 	</style>
 	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript">
+		var text = "";
+
 		$(document).ready(function() {
 			$('.share_btn').click(function()  {
-				var text = $(this).attr('title');
+				text = $(this).attr('title');
+
+				$('#mask').fadeIn(200);
+				$('#mask .btn:hidden').show(0);
+				$('#mask .msg').html('You want to share the post<br />" ' + text + ' "<br />on your weibao?');
+			});
+
+			$('#cancel_btn').click(function() {
+				$('#mask').fadeOut(200);
+			});
+			$('#ok_btn').click(function() {
+				$('#mask .btn').hide(0);
+				$('#mask .msg').html('Please wait while the message is being posted...');
+
 				$.ajax({
 					type:	'GET',
 					url:	'weiboshare.php',
 					data:	{text: text},
 					success:
 						function(data) {
-							alert(data);
+							$('#mask .msg').html('Done!');
+							setTimeout(function() {
+								$('#mask').fadeOut(200);
+							}, 500);
 						}
 				});
 			});
@@ -218,10 +286,18 @@ $uid = $uid_get['uid'];
 
 	echo '</div>';
 
+	echo '<div id="mask">';
+	echo '	<div class="msg_box">';
+	echo '		<div class="msg"></div>';
+	echo '		<div class="btn" id="cancel_btn">Cancel</div>';
+	echo '		<div class="btn" id="ok_btn">Yes</div>';
+	echo '	</div>';
+	echo '</div>';
+
 
 	?>
-	
-	
-	
+
+
+
 </body>
 </html>
